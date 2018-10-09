@@ -1,4 +1,10 @@
 ---
+- hosts: all
+  become: no
+  pre_tasks:
+    - name: "wait for the node to be ready"
+      local_action: wait_for host={{ inventory_hostname }} port={{ ssh_port[0] }}
+
 # install python to support ansible
 - hosts: all
   become: yes

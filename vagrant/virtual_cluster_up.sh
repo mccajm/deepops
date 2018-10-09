@@ -1,10 +1,10 @@
 #!/bin/bash
 set -x
+set -e
 
 # TODO: include vagrant install, ansible etc
 vagrant up --no-parallel
 #sudo pip install netaddr
-
 cd ..
 
 # Disable swap on mgmt servers (for Kubernetes)
