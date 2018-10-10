@@ -1,0 +1,4 @@
+---
+realmd_realm: localhost.localdomain
+realmd_username: Administrator
+realmd_password: password

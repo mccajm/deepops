@@ -1,0 +1,19 @@
+- name: Permit login for domain groups
+  environment:
+    LANG: en_US.UTF-8
+  shell: "realm permit -g '{{ item }}'"
+  with_items: '{{ login_domain_groups }}'
+
+- name: Add groups to sudoers for full sudo
+  lineinfile:
+    path = /etc/sudoers
+    state = present
+    line = '%{{ item }}@{{ realmd_realm }} ALL=(ALL) ALL'
+    with_items: {{ full_sudo_domain_groups }}
+
+ - name: Add groups to sudoers for partial sudo
+   lineinfile:
+     path = /etc/sudoers
+     state = present
+     line = '%{{ item }}@{{ realmd_realm }} ALL=(ALL=NOPASSWD:) {{ partial_sudo_cmds }}'
+     with_items: {{ partial_sudo_domain_groups }}

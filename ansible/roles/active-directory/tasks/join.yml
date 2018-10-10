@@ -1,0 +1,27 @@
+---
+- name: Domain | Install sssd and related packages
+  yum: pkg={{ item }} state=latest 
+  with_items:
+    - adcli
+    - realmd
+    - oddjob
+    - oddjob-mkhomedir
+    - sssd
+  when: ansible_os_family == "RedHat"
+
+- name: Domain | Join the domain
+  environment:
+    LANG: en_US.UTF-8
+  shell: "echo '{{ realmd_password }}' | realm join --unattended --user={{ realmd_username }}@{{ realmd_realm }} {{ realmd_realm }}"
+  changed_when: not 'Already joined to this domain' in realmd_join.stderr
+  failed_when: realmd_join.rc != 0 and not 'Already joined to this domain' in realmd_join.stderr
+
+- name: Domain | Ensure "default_domain_suffix = {{ realmd_realm }}" in sssd.conf
+  ini_file:
+    path: /etc/sssd/sssd.conf
+    section: sssd
+    option: default_domain_suffix
+    value: '{{ realmd_realm }}'
+    mode: 0600
+    backup: yes
+    notify: restart sssd
