@@ -1,0 +1,1 @@
+{{ dfs_mount }} -fstype=cifs,sec=ntlmv2,credentials={{ dfs_creds_path }},uid=${UID},gid=${EUID},username=${USERNAME} :{{ dfs_host }}/{{ dfs_export }}&
